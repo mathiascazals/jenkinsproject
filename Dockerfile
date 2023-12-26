@@ -7,3 +7,4 @@ RUN /usr/local/bin/python -m pip install --upgrade pip && pip3 install --no-cach
 RUN ["pytest", "-v", "--junitxml=reports/result.xml"]
 
 CMD tail -f /dev/null
+
