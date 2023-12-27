@@ -7,7 +7,19 @@ stages {
                 sh 'cat config.py'
             }
         }
-        
+        stage('Build') {
+            steps {
+                //  Building new image
+                sh 'docker image build -t mathiascazals/projet_3:latest .'
+                sh 'docker image tag mathiascazals/projet_3:latest mathiascazals/projet_3:$BUILD_NUMBER'
+
+                //  Pushing Image to Repository
+                sh 'docker push mathiascazals/projet_3:$BUILD_NUMBER'
+                sh 'docker push mathiascazals/projet_3:latest'
+                
+                echo "Image built and pushed to repository"
+            }
+        }
         stage('Deploy') {
             steps {
                 script{
