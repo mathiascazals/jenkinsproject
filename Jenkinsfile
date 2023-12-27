@@ -15,22 +15,25 @@ pipeline {
             }
         }
         stage('Build and Push') {
-            steps {
-                script {
-                    // Build and tag the Docker image using the specified Docker binary path
-                    sh "${DOCKER_BINARY} image build -t $DOCKER_HUB_REPO:latest ."
-                    sh "${DOCKER_BINARY} image tag $DOCKER_HUB_REPO:latest $DOCKER_HUB_REPO:$BUILD_NUMBER"
+    steps {
+        script {
+            // Build and tag the Docker image using the Docker binary from the PATH
+            sh "docker image build -t $DOCKER_HUB_REPO:latest ."
+            sh "docker image tag $DOCKER_HUB_REPO:latest $DOCKER_HUB_REPO:$BUILD_NUMBER"
+            
+            // Push the Docker image to Docker Hub
+            withCredentials([usernamePassword(credentialsId: 'your-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                sh "docker push $DOCKER_HUB_REPO:$BUILD_NUMBER"
+                sh "docker push $DOCKER_HUB_REPO:latest"
+                sh "docker logout"
+            }
 
-                    // Push the Docker image to Docker Hub
-                    withCredentials([usernamePassword(credentialsId: 'your-credentials-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "${DOCKER_BINARY} login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                        sh "${DOCKER_BINARY} push $DOCKER_HUB_REPO:$BUILD_NUMBER"
-                        sh "${DOCKER_BINARY} push $DOCKER_HUB_REPO:latest"
-                        sh "${DOCKER_BINARY} logout"
-                    }
+            echo "Image built and pushed to repository"
+        }
+    }
+}
 
-                    echo "Image built and pushed to repository"
-                }
             }
         }
         stage('Deploy') {
