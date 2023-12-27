@@ -4,6 +4,7 @@ pipeline {
         DOCKER_HUB_REPO = "mathiascazals/projet_3"
         CONTAINER_NAME = "flask-container"
         STUB_VALUE = "200"
+        DOCKER_BINARY = "/usr/bin/docker"
     }
     stages {
         stage('Stubs-Replacement') {
@@ -17,12 +18,12 @@ pipeline {
         stage('Build') {
             steps {
                 // Building new image
-                sh 'docker image build -t $DOCKER_HUB_REPO:latest https://github.com/mathiascazals/jenkinsproject'
-                sh 'docker image tag $DOCKER_HUB_REPO:latest $DOCKER_HUB_REPO:$BUILD_NUMBER'
+                sh "$DOCKER_BINARY image build -t $DOCKER_HUB_REPO:latest https://github.com/mathiascazals/jenkinsproject"
+                sh "$DOCKER_BINARY image tag $DOCKER_HUB_REPO:latest $DOCKER_HUB_REPO:$BUILD_NUMBER"
 
                 // Pushing Image to Repository
-                sh "docker push mathiascazals/projet_3:$BUILD_NUMBER"
-                sh "docker push mathiascazals/projet_3:latest"
+                sh "$DOCKER_BINARY push $DOCKER_HUB_REPO:$BUILD_NUMBER"
+                sh "$DOCKER_BINARY push $DOCKER_HUB_REPO:latest"
                 
                 echo "Image built and pushed to repository"
             }
@@ -32,11 +33,11 @@ pipeline {
                 script {
                     // sh 'BUILD_NUMBER = ${BUILD_NUMBER}'
                     if (BUILD_NUMBER == "20") {
-                        sh "docker run --name $CONTAINER_NAME -d -p 5000:5000 $DOCKER_HUB_REPO"
+                        sh "$DOCKER_BINARY run --name $CONTAINER_NAME -d -p 5000:5000 $DOCKER_HUB_REPO"
                     } else {
-                        sh "docker stop $CONTAINER_NAME"
-                        sh "docker rm $CONTAINER_NAME"
-                        sh "docker run --name $CONTAINER_NAME -d -p 5000:5000 $DOCKER_HUB_REPO"
+                        sh "$DOCKER_BINARY stop $CONTAINER_NAME"
+                        sh "$DOCKER_BINARY rm $CONTAINER_NAME"
+                        sh "$DOCKER_BINARY run --name $CONTAINER_NAME -d -p 5000:5000 $DOCKER_HUB_REPO"
                     }
                     // sh 'echo "Latest image/code deployed"'
                 }
