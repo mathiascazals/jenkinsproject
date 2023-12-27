@@ -1,10 +1,9 @@
-FROM python:3.6-slim
-
-COPY . /python-test-calculator
-WORKDIR /python-test-calculator
-
-RUN /usr/local/bin/python -m pip install --upgrade pip && pip3 install --no-cache-dir -r requirements.txt
-RUN ["pytest", "-v", "--junitxml=reports/result.xml"]
-
-CMD tail -f /dev/null
-
+FROM python:3.7-alpine
+WORKDIR /code
+ENV FLASK_APP app.py
+ENV FLASK_RUN_HOST 0.0.0.0
+RUN apk add --no-cache gcc musl-dev linux-headers
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["flask", "run"]
