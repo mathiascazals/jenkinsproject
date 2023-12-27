@@ -30,7 +30,7 @@ pipeline {
             }
 
             echo "Image built and pushed to repository"
-        }
+        
     }
 }
 
