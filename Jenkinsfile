@@ -1,4 +1,11 @@
-stages {
+pipeline {
+    agent any
+    environment {
+        DOCKER_HUB_REPO = "mathiascazals/projet_3"
+        CONTAINER_NAME = "flask-container"
+        STUB_VALUE = "200"
+    }
+    stages {
         stage('Stubs-Replacement'){
             steps {
                 // 'STUB_VALUE' Environment Variable declared in Jenkins Configuration 
@@ -10,8 +17,8 @@ stages {
         stage('Build') {
             steps {
                 //  Building new image
-                sh 'docker image build -t mathiascazals/projet_3:latest .'
-                sh 'docker image tag mathiascazals/projet_3:latest mathiascazals/projet_3:$BUILD_NUMBER'
+                sh 'docker image build -t $DOCKER_HUB_REPO:latest .'
+                sh 'docker image tag $DOCKER_HUB_REPO:latest $DOCKER_HUB_REPO:$BUILD_NUMBER'
 
                 //  Pushing Image to Repository
                 sh 'docker push mathiascazals/projet_3:$BUILD_NUMBER'
@@ -24,7 +31,7 @@ stages {
             steps {
                 script{
                     //sh 'BUILD_NUMBER = ${BUILD_NUMBER}'
-                    if (BUILD_NUMBER == "8") {
+                    if (BUILD_NUMBER == "1") {
                         sh 'docker run --name $CONTAINER_NAME -d -p 5000:5000 $DOCKER_HUB_REPO'
                     }
                     else {
@@ -37,3 +44,4 @@ stages {
             }
         }
     }
+}
