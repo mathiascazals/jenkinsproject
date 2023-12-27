@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER_HUB_REPO = "mathiascazals/projet_3"
-        CONTAINER_NAME = "flask-container"
+        CONTAINER_NAME = "projet 3"
         STUB_VALUE = "200"
     }
     stages {
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 script{
                     //sh 'BUILD_NUMBER = ${BUILD_NUMBER}'
-                    if (BUILD_NUMBER == "7") {
+                    if (BUILD_NUMBER == "8") {
                         sh 'docker run --name $CONTAINER_NAME -d -p 5000:5000 $DOCKER_HUB_REPO'
                     }
                     else {
