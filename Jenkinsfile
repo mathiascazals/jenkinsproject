@@ -6,6 +6,14 @@ pipeline {
         STUB_VALUE = "200"
     }
     stages {
+        stage('Check Docker') {
+            steps {
+                script {
+                    // Vérifier si Docker est accessible
+                    sh 'docker --version'
+                }
+            }
+        }
         stage('Stubs-Replacement') {
             steps {
                 // 'STUB_VALUE' Environment Variable declared in Jenkins Configuration 
