@@ -17,7 +17,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Building new image
-                sh 'docker image build -t $DOCKER_HUB_REPO:latest .'
+                sh 'docker image build -t $DOCKER_HUB_REPO:latest https://github.com/mathiascazals/jenkinsproject'
                 sh 'docker image tag $DOCKER_HUB_REPO:latest $DOCKER_HUB_REPO:$BUILD_NUMBER'
 
                 // Pushing Image to Repository
